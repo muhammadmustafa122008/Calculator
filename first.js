@@ -1,37 +1,38 @@
 const addition = (a,b) => a + b;
 const subtraction = (a,b) => a - b; 
 const multiplication = (a,b) => a * b; 
-const division = (a,b) => {
-  if(b == 0 ){
-    return "Zero Divide Error";
-  } else {
-    return a / b;
-  }
-};  
+const division = (a,b) => b == 0 ? "Zero Divide Error" : a / b;
 
 let firstNumber = ""; 
 let operation = "";
 let secondNumber = ""; 
 let resultDisplayed = false;
 
-function operate(operation, num1, num2) {
+const display = document.querySelector(".display");
+
+function operate(op, num1, num2) {
   num1 = Number(num1);
   num2 = Number(num2);
-  switch(operation){
-    case '+' : return addition(num1, num2);
-    case '-' : return subtraction(num1, num2); 
-    case '*' : return multiplication(num1, num2); 
-    case '/' : return division(num1, num2); 
+
+  switch(op){
+    case '+': return addition(num1, num2);
+    case '-': return subtraction(num1, num2);
+    case '*': return multiplication(num1, num2);
+    case '/': return division(num1, num2);
   }
 }
 
 function handleDigitClick(digit){
-  if (resultDisplayed) {
+  if(resultDisplayed){
     display.textContent = "";
     firstNumber = "";
     secondNumber = "";
     operation = "";
     resultDisplayed = false;
+  }
+
+  if(digit === '.' && ((operation === "" && firstNumber.includes('.')) || (operation !== "" && secondNumber.includes('.')))) {
+    return; // prevent multiple decimals
   }
 
   if(operation === ""){
@@ -43,7 +44,10 @@ function handleDigitClick(digit){
   }
 }
 
-function handleOperaterClick(operater){ 
+function handleOperaterClick(op){
+  if(op === 'x') op = '*';
+  if(op === '÷') op = '/';
+
   if(firstNumber === "") return;
 
   if(operation !== "" && secondNumber !== "") {
@@ -54,12 +58,12 @@ function handleOperaterClick(operater){
     firstNumber = result.toString();
     secondNumber = "";
   }
-  operation = operater;
+  operation = op;
   resultDisplayed = false;
 }
 
 function handleEqualtoClick(){
-  if(firstNumber !== "" && operation !== "" && secondNumber !== "") {
+  if(firstNumber !== "" && operation !== "" && secondNumber !== ""){
     let result = operate(operation, firstNumber, secondNumber);
     result = roundResult(result);
     display.textContent = result;
@@ -80,25 +84,12 @@ function handleClearclick() {
 }
 
 function roundResult(number) {
-  return Math.round(number * 100000) / 100000;
+  if(typeof number === "number") return Math.round(number * 100000) / 100000;
+  return number; // for Zero Divide Error
 }
 
-
-const display = document.querySelector(".display");
-
-const digits = document.querySelectorAll(".digit");
-digits.forEach(btn => {
-  btn.addEventListener("click", () => handleDigitClick(btn.textContent));
-});
-
-const operators = document.querySelectorAll(".operater");
-operators.forEach(btn => {
-  btn.addEventListener("click", () => handleOperaterClick(btn.textContent));
-});
-
-const equalBtn = document.querySelector(".equalto");
-equalBtn.addEventListener("click", handleEqualtoClick);
-
-const clearBtn = document.querySelector(".clear");
-clearBtn.addEventListener("click", handleClearclick);
-  
+// Event listeners
+document.querySelectorAll(".digit").forEach(btn => btn.addEventListener("click", () => handleDigitClick(btn.textContent)));
+document.querySelectorAll(".operater").forEach(btn => btn.addEventListener("click", () => handleOperaterClick(btn.textContent)));
+document.querySelector(".equalto").addEventListener("click", handleEqualtoClick);
+document.querySelector(".clear").addEventListener("click", handleClearclick);

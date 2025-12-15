@@ -17,11 +17,15 @@ body{
 .display{
     width: 64%;
     margin-right: 10px;
-    height: 5em;
+    height: 3em;
     background-color: #fff4e6;
     margin-top: 10px;
     border-radius: 5%;
     border: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    font-size: 27px;
 }
 
 .digit , .operater , .clear , .equalto{
